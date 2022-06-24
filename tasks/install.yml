@@ -50,6 +50,12 @@
   loop: "{{ ansible_local['pyenv_python_installations']['to_reinstall'] | default([]) }}"
   when: pyenv_uninstall_python_w_wrong_configure_opts
 
+- name: Download Python binary package from Aliyun npm mirror
+  ansible.builtin.get_url:
+    url: "https://registry.npmmirror.com/-/binary/python/{{ item }}/Python-{{ item }}.tar.xz"
+    dest: "{{ pyenv_path }}/cache/Python-{{ item }}.tar.xz"
+  with_items: "{{ pyenv_python_versions }}"
+
 - name: Install Python interpreters "{{ pyenv_python_versions }}"
   shell: ". {{ pyenv_path }}/.pyenvrc && pyenv install {{ item }}"
   environment:
